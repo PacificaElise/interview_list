@@ -2,8 +2,11 @@
 import { ref, computed } from 'vue'
 import type { ComputedRef } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { getAuth, signOut } from 'firebase/auth'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
+const router = useRouter()
 
 type MenuItem = {
   label: string
@@ -33,11 +36,16 @@ const items = ref<MenuItem[]>([
   },
   {
     label: 'Статистика',
-    icon: 'pi pi-chert-pie',
+    icon: 'pi pi-chart-pie',
     path: '/statistic',
     show: computed((): boolean => !!userStore.userId)
   }
 ])
+
+const signOutMethod = async (): Promise<void> => {
+  await signOut(getAuth())
+  router.push('/auth')
+}
 </script>
 
 <template>
@@ -51,12 +59,8 @@ const items = ref<MenuItem[]>([
       </template>
     </template>
     <template #end>
-      <span
-        v-if="userStore.userId"
-        class="flex-align-items-center menu-exit"
-        @click="userStore.userId = ''"
-      >
-        <span class="p-menuitem-icon pi pi-sign-out" />
+      <span v-if="userStore.userId" @click="signOutMethod" class="flex align-item-center menu-exit">
+        <span class="pi pi-sign-out p-p-menuitem-icon" />
         <span class="ml-2">Выход</span>
       </span>
     </template>
@@ -67,7 +71,6 @@ const items = ref<MenuItem[]>([
 .menu {
   margin: 30px 0;
 }
-
 .menu-exit {
   cursor: pointer;
 }
