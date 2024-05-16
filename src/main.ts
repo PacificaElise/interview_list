@@ -12,6 +12,9 @@ import ConfirmationService from 'primevue/confirmationservice'
 import Menubar from 'primevue/menubar'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
+import Textarea from 'primevue/textarea'
+import RadioButton from 'primevue/radiobutton'
 import Toast from 'primevue/toast'
 import ProgressSpinner from 'primevue/progressspinner'
 import Card from 'primevue/card'
@@ -19,6 +22,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import ConfirmDialog from 'primevue/confirmdialog'
 import InlineMessage from 'primevue/inlinemessage'
+import Calendar from 'primevue/calendar'
 
 import 'primeflex/primeflex.css'
 
@@ -48,6 +52,9 @@ app.use(PrimeVue)
 app.component('app-menubar', Menubar)
 app.component('app-button', Button)
 app.component('app-input-text', InputText)
+app.component('app-input-number', InputNumber)
+app.component('app-textarea', Textarea)
+app.component('app-radio-button', RadioButton)
 app.component('app-toast', Toast)
 app.component('app-progress-spinner', ProgressSpinner)
 app.component('app-card', Card)
@@ -55,5 +62,6 @@ app.component('app-data-table', DataTable)
 app.component('app-column', Column)
 app.component('app-confirm-dialog', ConfirmDialog)
 app.component('app-inline-message', InlineMessage)
+app.component('app-calendar', Calendar)
 
 app.mount('#app')

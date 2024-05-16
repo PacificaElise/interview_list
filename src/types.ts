@@ -7,4 +7,14 @@ export type InterviewType = {
   contactTelegram?: string
   contactWhatsApp?: string
   contactPhone?: string
+  salaryFrom?: number
+  salaryTo?: number
+  stages: StageType[]
+  result?: 'refusal' | 'offer'
+}
+
+export type StageType = {
+  name: string
+  date: string
+  description?: string
 }

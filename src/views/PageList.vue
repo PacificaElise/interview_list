@@ -137,9 +137,4 @@ onMounted(async () => {
 .contacts__icon {
   font-size: 20px;
 }
-.loader {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-}
 </style>
