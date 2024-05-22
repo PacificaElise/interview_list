@@ -69,11 +69,10 @@ onMounted(async () => {
       <app-column field="hrName" header="Имя HR" />
       <app-column field="vacancyLink" header="Вакансия">
         <template #body="slotProps">
-          <a :href="slotProps.data.vacancyLink" target="_blank">{{
-            slotProps.data.vacancyLink
-          }}</a></template
+          <a :href="slotProps.data.vacancyLink" target="_blank">Ссылка на вакансию</a></template
         >
       </app-column>
+
       <app-column header="Контакты">
         <template #body="slotProps">
           <div class="contacts">
@@ -101,6 +100,41 @@ onMounted(async () => {
           </div>
         </template>
       </app-column>
+
+      <app-column header="Пройденные этапы">
+        <template #body="slotProps">
+          <span v-if="!slotProps.data.stages">Не пройдено</span>
+          <div v-else class="flex gap-1 cursor-pointer">
+            <app-badge
+              rounded
+              v-for="(stage, i) in slotProps.data.stages"
+              :key="i"
+              :value="i + 1"
+              v-tooltip.top="stage.name"
+            />
+          </div>
+        </template>
+      </app-column>
+
+      <app-column header="Зарплатная вилка">
+        <template #body="slotProps">
+          <span v-if="!slotProps.data.salaryFrom">Не заполнено</span>
+          <span v-else>{{ slotProps.data.salaryFrom }} - {{ slotProps.data.salaryTo }}</span>
+        </template>
+      </app-column>
+
+      <app-column header="Результат">
+        <template #body="slotProps">
+          <span v-if="!slotProps.data.result">Не пройдено</span>
+          <template v-else>
+            <app-badge
+              :severity="slotProps.data.result === 'offer' ? 'success ' : 'danger'"
+              :value="slotProps.data.result"
+            />
+          </template>
+        </template>
+      </app-column>
+
       <app-column>
         <template #body="slotProps">
           <div class="flex gap-2">

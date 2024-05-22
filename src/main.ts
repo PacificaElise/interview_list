@@ -23,6 +23,8 @@ import Column from 'primevue/column'
 import ConfirmDialog from 'primevue/confirmdialog'
 import InlineMessage from 'primevue/inlinemessage'
 import Calendar from 'primevue/calendar'
+import Badge from 'primevue/badge'
+import Tooltip from 'primevue/tooltip'
 
 import 'primeflex/primeflex.css'
 
@@ -49,6 +51,9 @@ app.use(ConfirmationService)
 app.use(createPinia())
 app.use(router)
 app.use(PrimeVue)
+
+app.directive('tooltip', Tooltip)
+
 app.component('app-menubar', Menubar)
 app.component('app-button', Button)
 app.component('app-input-text', InputText)
@@ -63,5 +68,6 @@ app.component('app-column', Column)
 app.component('app-confirm-dialog', ConfirmDialog)
 app.component('app-inline-message', InlineMessage)
 app.component('app-calendar', Calendar)
+app.component('app-badge', Badge)
 
 app.mount('#app')
