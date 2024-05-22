@@ -15,6 +15,6 @@ export type InterviewType = {
 
 export type StageType = {
   name: string
-  date: string
+  date: Date | null
   description?: string
 }

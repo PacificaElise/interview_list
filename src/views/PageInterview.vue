@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { useUserStore } from '@/stores/user'
 import type { InterviewType, StageType } from '@/types'
 import { getAuth } from 'firebase/auth'
-import dayjs from 'dayjs'
 
 const db = getFirestore()
 const userStore = useUserStore()
@@ -21,7 +20,24 @@ const docref = doc(db, `users/${userId}/interviews`, route.params.id as string)
 const getData = async (): Promise<void> => {
   isLoading.value = true
   const docSnap = await getDoc(docref)
-  interview.value = docSnap.data() as InterviewType
+
+  if (docSnap.exists()) {
+    const data = docSnap.data() as InterviewType
+
+    if (data.stages && data.stages.length > 0) {
+      data.stages = data.stages.map((stage: StageType) => {
+        if (stage.date && stage.date instanceof Timestamp) {
+          return {
+            ...stage,
+            date: stage.date.toDate()
+          }
+        }
+        return stage
+      })
+    }
+    interview.value = data
+  }
+
   isLoading.value = false
 }
 
@@ -31,7 +47,7 @@ const addStage = () => {
       interview.value.stages = []
     }
 
-    interview.value.stages.push({ name: '', date: '', description: '' })
+    interview.value.stages.push({ name: '', date: null, description: '' })
   }
 }
 
@@ -40,13 +56,6 @@ const removeStage = (index: number) => {
     if (interview.value.stages) {
       interview.value.stages.splice(index, 1)
     }
-  }
-}
-
-const saveDateStage = (index: number) => {
-  if (interview.value?.stages && interview.value.stages.length) {
-    const date = interview.value.stages[index].date
-    interview.value.stages[index].date = dayjs(date).format('DD.MM.YYYY')
   }
 }
 
@@ -146,7 +155,6 @@ onMounted(async () => {
                 :id="`stage-date-${index}`"
                 dateFormat="dd.mm.yy"
                 v-model="stage.date"
-                @date-select="saveDateStage(index)"
               />
             </div>
 
