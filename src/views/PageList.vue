@@ -124,7 +124,9 @@ onMounted(async () => {
       <app-column field="hrName" header="Имя HR" />
       <app-column field="vacancyLink" header="Вакансия">
         <template #body="slotProps">
-          <a :href="slotProps.data.vacancyLink" target="_blank">Ссылка на вакансию</a></template
+          <a :href="slotProps.data.vacancyLink" target="_blank">{{
+            slotProps.data.vacancyLink
+          }}</a></template
         >
       </app-column>
 
