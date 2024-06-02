@@ -25,6 +25,7 @@ import InlineMessage from 'primevue/inlinemessage'
 import Calendar from 'primevue/calendar'
 import Badge from 'primevue/badge'
 import Tooltip from 'primevue/tooltip'
+import Chart from 'primevue/chart'
 
 import 'primeflex/primeflex.css'
 
@@ -69,5 +70,6 @@ app.component('app-confirm-dialog', ConfirmDialog)
 app.component('app-inline-message', InlineMessage)
 app.component('app-calendar', Calendar)
 app.component('app-badge', Badge)
+app.component('app-chart', Chart)
 
 app.mount('#app')

@@ -9,7 +9,8 @@ import {
   orderBy,
   getDocs,
   deleteDoc,
-  doc
+  doc,
+  where
 } from 'firebase/firestore'
 import type { InterviewType } from '@/types'
 
@@ -20,18 +21,45 @@ const interviews = ref<InterviewType[]>([])
 
 const isLoading = ref<boolean>(true)
 
-const getAllInterviews = async <T extends InterviewType>(): Promise<T[]> => {
-  const getData = query(collection(db, `users/${userId}/interviews`), orderBy('createdAt', 'desc'))
+const selectedFilterResult = ref<string>('')
+
+const setInterviews = async (): Promise<void> => {
+  isLoading.value = true
+  const listInterviews: Array<InterviewType> = await getAllInterviews()
+  interviews.value = [...listInterviews]
+  isLoading.value = false
+}
+
+const submitFilter = async (): Promise<void> => {
+  isLoading.value = true
+  const listInterviews: Array<InterviewType> = await getAllInterviews(true)
+  interviews.value = listInterviews
+  isLoading.value = false
+}
+
+const clearFilter = async (): Promise<void> => {
+  setInterviews()
+  selectedFilterResult.value = ''
+}
+
+const getAllInterviews = async <T extends InterviewType>(isFilter?: boolean): Promise<T[]> => {
+  let getData
+
+  if (isFilter) {
+    getData = query(
+      collection(db, `users/${userId}/interviews`),
+      orderBy('createdAt', 'desc'),
+      where('result', '==', selectedFilterResult.value)
+    )
+  } else {
+    getData = query(collection(db, `users/${userId}/interviews`), orderBy('createdAt', 'desc'))
+  }
 
   const listDocs = await getDocs(getData)
 
   return listDocs.docs.map((doc) => doc.data() as T)
 }
 
-const setInterviews = async (): Promise<void> => {
-  const listInterviews = await getAllInterviews()
-  interviews.value = [...listInterviews]
-}
 const confirmRemoveInterview = async (id: string): Promise<void> => {
   confirm.require({
     message: 'Вы уверены, что хотите удалить собеседование?',
@@ -42,17 +70,14 @@ const confirmRemoveInterview = async (id: string): Promise<void> => {
     rejectClass: 'p-button-secondary p-button-outlined',
     acceptClass: 'p-button-danger',
     accept: async () => {
-      isLoading.value = true
       await deleteDoc(doc(db, `users/${userId}/interviews`, id))
       setInterviews()
-      isLoading.value = false
     }
   })
 }
 
 onMounted(async () => {
   setInterviews()
-  isLoading.value = false
 })
 </script>
 
@@ -64,6 +89,36 @@ onMounted(async () => {
   >
   <div v-else>
     <h1>Список собеседований</h1>
+    <div class="flex align-items-center gap-5 mb-5">
+      <div class="flex align-items-center gap-3">
+        <div class="flex align-items-center">
+          <app-radio-button
+            inputId="result1"
+            name="result"
+            value="refusal"
+            v-model="selectedFilterResult"
+          />
+          <label for="result1" class="ml-2">Отказ</label>
+        </div>
+        <div class="flex align-items-center">
+          <app-radio-button
+            inputId="result2"
+            name="result"
+            value="offer"
+            v-model="selectedFilterResult"
+          />
+          <label for="result2" class="ml-2">Оффер</label>
+        </div>
+      </div>
+
+      <div class="flex align-items-center gap-3">
+        <app-button @click="submitFilter" :disabled="!selectedFilterResult">Применить</app-button>
+        <app-button severity="danger" @click="clearFilter" :disabled="!selectedFilterResult"
+          >Сбросить</app-button
+        >
+      </div>
+    </div>
+
     <app-data-table :value="interviews">
       <app-column field="company" header="Компания" />
       <app-column field="hrName" header="Имя HR" />

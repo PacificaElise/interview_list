@@ -2,12 +2,10 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { getFirestore, doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
-import { useUserStore } from '@/stores/user'
 import type { InterviewType, StageType } from '@/types'
 import { getAuth } from 'firebase/auth'
 
 const db = getFirestore()
-const userStore = useUserStore()
 const route = useRoute()
 
 const isLoading = ref<boolean>(true)
